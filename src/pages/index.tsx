@@ -5,7 +5,18 @@ import { RoundSpinner, SpokeSpinner } from "@/components/spinner";
 import { QRCode } from "react-qrcode-logo";
 import { Check } from "@mynaui/icons-react";
 
-const inter = Inter({ subsets: ["latin"] });
+function sanitizedAmountInput(amount: string) {
+  if (!amount.includes(".")) return `${amount}.00`
+
+  const [dollar, rawCents] = amount.split(".")
+  const cents = (() => {
+    if (rawCents.length > 2) return rawCents.substring(0, 2)
+    if (rawCents.length === 2) return rawCents
+    if (rawCents.length === 1) return `${rawCents}0`
+    return "00"
+  })()
+  return `${dollar}.${cents}`
+}
 
 export default function Home() {
   const [amount, setAmount] = useState<string>();
@@ -29,6 +40,13 @@ export default function Home() {
   const onStartOver = () => {
     setAmount(undefined)
     setConfirmedAmount(undefined)
+  }
+
+  const onCheckout = () => {
+    if (!amount) return 
+  
+    const sanitizedAmount = sanitizedAmountInput(amount)
+    setConfirmedAmount(sanitizedAmount)
   }
 
   return (
@@ -64,7 +82,7 @@ export default function Home() {
           <Payment amount={confirmedAmount} />
         ) : (
           <button
-            onClick={() => setConfirmedAmount(amount)}
+            onClick={onCheckout}
             className="bg-uniswap-pink-500 rounded-md text-white py-4 px-12 disabled:bg-uniswap-pink-100 text-center flex justify-center"
             disabled={!amount}
           >
@@ -94,12 +112,14 @@ function Payment({ amount }: { amount: string }) {
   // fetch QR code string and unipayId
   useEffect(() => {
     async function fetchQRCode() {
-      setTimeout(() => {
-        setQRCode("hello world");
-        setStatus(PaymentStatus.AwaitingPayment);
-      }, 3000)
-      // const res = await fetch(`unipay.xyz?amount=${amount}`);
-      // const { qrCode: code, unipayId } = await res.json();
+      try {
+        const res = await fetch(`https://unipay-api-production.up.railway.app/qr?amount=${amount}`);
+        const { code } = await res.json();
+        console.log("code", code)
+        setQRCode(code)
+      } catch (_) {
+        setStatus(PaymentStatus.Error)
+      }
       
     }
 
@@ -158,7 +178,7 @@ function Payment({ amount }: { amount: string }) {
   if (status === PaymentStatus.Error) {
     return (
       <div className="flex flex-col self-center text-center">
-        <div>Payment error. Try again?</div>
+        <div>There was an error. Try again?</div>
         <div className="text-4xl">😭</div>
       </div>
     );
