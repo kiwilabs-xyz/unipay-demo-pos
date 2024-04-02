@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-image: linear-gradient(#F6E2EC, #FF007A);
+}
+
 button {
   cursor: pointer;
 }

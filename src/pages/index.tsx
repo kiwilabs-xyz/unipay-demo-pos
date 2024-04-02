@@ -51,7 +51,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24 font-mono">
-      <div className="border border-black p-4 rounded-lg flex flex-col gap-4 w-96">
+      <div className="border border-black p-4 rounded-lg flex flex-col gap-4 w-96 bg-white">
         <div className="text-xl font-bold self-center">UniPay Demo POS</div>
         {confirmedAmount ? (
           <div className="text-center text-2xl font-bold">
@@ -107,20 +107,20 @@ function Payment({ amount }: { amount: string }) {
   const [status, setStatus] = useState(PaymentStatus.GeneratingQRCode);
   const [qrCode, setQRCode] = useState<string>();
   const [unipayId, setUnipayId] = useState<string>();
-  const [unipayStatus, setUnipayStatus] = useState<string>();
+  const [unipayWebhook, setUnipayWebhook] = useState<string>();
 
   // fetch QR code string and unipayId
   useEffect(() => {
     async function fetchQRCode() {
       try {
         const res = await fetch(`https://unipay-api-production.up.railway.app/qr?amount=${amount}`);
-        const { code } = await res.json();
-        console.log("code", code)
-        setQRCode(code)
+        const { qrCode, webhook } = await res.json();
+        setQRCode(qrCode)
+        setUnipayWebhook(webhook)
+        setStatus(PaymentStatus.AwaitingPayment)
       } catch (_) {
         setStatus(PaymentStatus.Error)
       }
-      
     }
 
     fetchQRCode();
