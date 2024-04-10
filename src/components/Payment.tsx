@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RoundSpinner, SpokeSpinner } from "./Spinner";
+import { RoundSpinner, SpokeSpinner } from "./LoadingSpinner";
 import { QRCode } from "react-qrcode-logo";
 import { Check } from "@mynaui/icons-react";
 
