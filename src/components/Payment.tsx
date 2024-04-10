@@ -12,6 +12,7 @@ enum PaymentStatus {
   Reverted = "TX_REVERTED",
 }
 
+// for client side states
 enum ClientPaymentStatus {
   GeneratingQRCode = "GENERATING_QR_CODE",
   GeneralError = "GENERAL_ERROR",
