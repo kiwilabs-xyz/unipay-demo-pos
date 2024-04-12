@@ -31,6 +31,7 @@ export function Payment({ amount }: { amount: string }) {
     ClientPaymentStatus.GeneratingQRCode
   );
   const [qrCode, setQRCode] = useState<string>();
+  const [copied, setCopied] = useState(false);
   const [unipayWebhook, setUnipayWebhook] = useState<string>();
 
   // fetch QR code string and unipayId
@@ -41,6 +42,7 @@ export function Payment({ amount }: { amount: string }) {
           `https://unipay-api-production.up.railway.app/qr?amount=${amount}`
         );
         const { qrCode, webhook } = await res.json();
+        setCopied(false);
         setQRCode(qrCode);
         setUnipayWebhook(webhook);
         setStatus(PaymentStatus.AwaitingTxStatus);
@@ -88,6 +90,15 @@ export function Payment({ amount }: { amount: string }) {
           eyeRadius={5}
           fgColor="#FF007A"
         />
+        <button
+          className="text-uniswap-pink-100 text-xs hover:text-uniswap-pink-500 self-center"
+          onClick={() => {
+            navigator.clipboard.writeText(qrCode)
+            setCopied(true)
+          }}
+        >
+          {copied ? 'Copied!' : 'Copy QR code'}
+        </button>
       </div>
     );
   }
