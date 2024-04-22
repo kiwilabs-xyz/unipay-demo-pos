@@ -4,7 +4,7 @@ import { recoverMessageAddress } from "viem";
 
 export default function CheckIn() {
   const nonce = "THIS_SHOULD_BE_A_RANDOM_STRING"; // You could probably use the Stripe payment ID here, or a UUID
-  const webhook = `"https://webhook_url_here.com/${nonce}`;
+  const webhook = `https://webhook_url_here.com/${nonce}`;
   const message = `Sign this message to check into the Uniswap Cafe! Nonce: ${nonce}`;
 
   const [address, setAddress] = useState<string>();
