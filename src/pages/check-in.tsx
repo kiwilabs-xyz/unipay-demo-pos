@@ -3,7 +3,7 @@ import { QRCode } from "react-qrcode-logo";
 import { recoverMessageAddress } from "viem";
 
 export default function CheckIn() {
-  const nonce = "THIS_SHOULD_BE_A_RANDOM_STRING"; // You could probably use the Stripe payment ID here, or a UUID
+  const nonce = "123456"; // You could probably use the Stripe payment ID here, or a UUID
   const webhook = `https://webhook_url_here.com/${nonce}`;
   const message = `Sign this message to check into the Uniswap Cafe! Nonce: ${nonce}`;
 
@@ -25,15 +25,17 @@ export default function CheckIn() {
   // poll for payment status given webhook
   useEffect(() => {
     const interval = setInterval(async () => {
-      const res = await fetch(webhook);
-      const { response } = await res.json();
+      try {
+        const res = await fetch(webhook);
+        const { response } = await res.json();
 
-      const recoveredAddress = await recoverMessageAddress({
-        message,
-        signature: response,
-      });
+        const recoveredAddress = await recoverMessageAddress({
+          message,
+          signature: response,
+        });
 
-      setAddress(recoveredAddress);
+        setAddress(recoveredAddress);
+      } catch (_) {}
     }, 2000);
 
     return () => clearInterval(interval);
