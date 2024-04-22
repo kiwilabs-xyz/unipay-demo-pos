@@ -8,9 +8,11 @@ export default function CheckIn() {
   const message = `Sign this message to check into the Uniswap Cafe! Nonce: ${nonce}`;
 
   const [address, setAddress] = useState<string>();
+  const [copied, setCopied] = useState(false);
 
   const qrCodeJson = {
     method: "personal_sign",
+    chainId: 8453,
     message,
     webhook,
     dapp: {
@@ -44,13 +46,24 @@ export default function CheckIn() {
       <div className="border border-black p-4 rounded-lg flex flex-col items-center gap-4 w-96 bg-white">
         <div>Check in to UniPay</div>
         {!address ? (
-          <QRCode
-            value={qrCode}
-            size={250}
-            qrStyle="dots"
-            eyeRadius={5}
-            fgColor="#FF007A"
-          />
+          <div>
+            <QRCode
+              value={qrCode}
+              size={250}
+              qrStyle="dots"
+              eyeRadius={5}
+              fgColor="#FF007A"
+            />
+            <button
+              className="text-uniswap-pink-100 text-xs hover:text-uniswap-pink-500 self-center"
+              onClick={() => {
+                navigator.clipboard.writeText(qrCode);
+                setCopied(true);
+              }}
+            >
+              {copied ? "Copied!" : "Copy QR code"}
+            </button>
+          </div>
         ) : (
           <div>Hello {address}!</div>
         )}
