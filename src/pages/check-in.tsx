@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { recoverMessageAddress } from "viem";
+import { v4 as uuid } from 'uuid'
 
 export default function CheckIn() {
-  const nonce = "123456"; // You could probably use the Stripe payment ID here, or a UUID
-  const webhook = `https://webhook_url_here.com/${nonce}`;
+  const [nonce, setNonce] = useState(uuid())
+  const webhook = `https://unisap-pos-pay-20c498b4406f.herokuapp.com/webhook/${nonce}`;
   const message = `Sign this message to check into the Uniswap Cafe! Nonce: ${nonce}`;
 
   const [address, setAddress] = useState<string>();
@@ -35,6 +36,7 @@ export default function CheckIn() {
         });
 
         setAddress(recoveredAddress);
+        setNonce(uuid());
       } catch (_) {}
     }, 2000);
 
