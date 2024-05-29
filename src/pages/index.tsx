@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { Payment } from "@/components/Payment";
+import Image from "next/image";
 
 function sanitizedAmountInput(amount: string) {
   if (!amount.includes(".")) return `${amount}.00`
@@ -48,7 +49,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-24 font-mono">
       <div className="border border-black p-4 rounded-lg flex flex-col gap-4 w-96 bg-white">
-        <div className="text-xl font-bold self-center">UniPay Demo POS</div>
+        <div className="h-[60px] relative"><Image style={{ objectFit: 'contain' }} src="/logo.png" fill alt="Superswap cafe" /></div>
         {confirmedAmount ? (
           <div className="text-center text-2xl font-bold">
             Paying ${confirmedAmount}
